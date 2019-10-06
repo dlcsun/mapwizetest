@@ -1,13 +1,15 @@
 package com.example.mapwizetest;
+import android.content.Intent;
 
-import android.graphics.BitmapFactory;
+//import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
+//import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+//import com.google.android.material.navigation.NavigationView;
 import com.google.ar.core.ArCoreApk;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
@@ -29,20 +31,34 @@ import java.util.List;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
+
+
+
+
 /**
  * Display {@link SymbolLayer} icons on the map.
  */
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback {
 
+
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
     private MapView mapView;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+
+        setContentView(R.layout.activity_main);
+        setTitle("Map");
+
+
+
 
 // Mapbox access token is configured here. This needs to be called either in your application
 // object or in the same activity which contains the mapview.
@@ -63,12 +79,7 @@ public class MainActivity extends AppCompatActivity implements
         ArCoreApk.Availability availability = ArCoreApk.getInstance().checkAvailability(this);
         if (availability.isTransient()) {
             // Re-query at 5Hz while compatibility is checked in the background.
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    checkARcompat();
-                }
-            }, 200);
+            new Handler().postDelayed(this::checkARcompat, 200);
         }
         if (availability.isSupported()) {
             //enable relevant buttons
@@ -107,15 +118,12 @@ public class MainActivity extends AppCompatActivity implements
                         .withProperties(PropertyFactory.iconImage(ICON_ID),
                                 iconAllowOverlap(true),
                                 iconOffset(new Float[] {0f, -9f}))
-                ), new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
+                ), style -> {
 
-// Map is set up and the style has loaded. Now you can add additional data or make other map adjustments.
+    // Map is set up and the style has loaded. Now you can add additional data or make other map adjustments.
 
 
-            }
-        });
+                });
     }
 
     @Override
@@ -165,4 +173,5 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
 }
